@@ -20,7 +20,7 @@ faq_data = [
 
     # Exams
     {"question": "When are the semester exams?", "answer": "End semester exams are held in July for odd semesters and June even semesters. Exact datesheet is uploaded on the college website 3 weeks before exams."},
-    {"question": "What is the minimum attendance required?", "answer": "Minimum 75% attendance is mandatory to appear in semester exams. Students below 75% are detained and cannot sit in exams."},
+    {"question": "What is the minimum attendance required?", "answer": "Minimum 75percentage attendance is mandatory to appear in semester exams. Students below 75percentage are detained and cannot sit in exams."},
     {"question": "How is internal assessment calculated?", "answer": "Internal marks are 30 out of 100. It includes: 2 class tests (10 marks each), assignment (5 marks), and attendance (5 marks)."},
     {"question": "What is the passing criteria?", "answer": "Minimum 40% marks required in each subject to pass. Students must pass both internal (out of 30) and external (out of 70) separately."},
     {"question": "How to apply for re-evaluation?", "answer": "Apply for re-evaluation within 15 days of result declaration. Fee is Rs 500 per subject. Form available at the examination office."},
@@ -56,7 +56,7 @@ faq_data = [
     {"question": "Are there student clubs in the college?", "answer": "Yes, there are technical clubs, cultural clubs, coding clubs, sports clubs, and entrepreneurship cells."},
     {"question": "Are there annual fests or events?", "answer": "Yes, the college organizes technical fests (SANKALP), inter college sports fest (Kurukshetra), and hackathons."},
     {"question": "Can students participate in extracurricular activities?", "answer": "Yes, students are encouraged to participate in extracurricular activities alongside academics."},
-    {"question": "Is attendance strict in the college?", "answer": "Yes, 75% attendance is mandatory. Shortage may lead to detention or fines."},
+    {"question": "Is attendance strict in the college?", "answer": "Yes, 75percentage attendance is mandatory. Shortage may lead to detention or fines."},
 
     # Transport
     {"question": "Is transport facility available?", "answer": "Yes, the college provides bus services covering major areas of the city and nearby towns."},
