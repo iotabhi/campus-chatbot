@@ -28,3 +28,8 @@ async def chat(request: ChatRequest):
 @app.get("/")
 def root():
     return {"status": "Campus Chatbot API is running"}
+if __name__ == "__main__":
+    import uvicorn
+    import os
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
