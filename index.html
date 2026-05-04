@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusBot</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #fff;
+    --user: #38bdf8;
+    --bot: #334155;
+}
+
+.light {
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --text: #0f172a;
+    --bot: #e2e8f0;
+}
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    width: 100%;
+    max-width: 700px;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    font-weight: 600;
+}
+
+#chatbox {
+    width: 95%;
+    max-width: 700px;
+    height: 65vh;
+    overflow-y: auto;
+    background: var(--card);
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message {
+    padding: 10px 14px;
+    border-radius: 15px;
+    max-width: 75%;
+}
+
+.user {
+    align-self: flex-end;
+    background: var(--user);
+    color: black;
+}
+
+.bot {
+    align-self: flex-start;
+    background: var(--bot);
+}
+
+#typing {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+#inputArea {
+    width: 95%;
+    max-width: 700px;
+    display: flex;
+    margin: 10px;
+}
+
+input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+}
+
+button {
+    margin-left: 8px;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: #38bdf8;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#suggestions {
+    width: 95%;
+    max-width: 700px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.suggestion {
+    background: #334155;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    🎓 CampusBot
+    <span onclick="toggleTheme()" style="cursor:pointer;">🌙</span>
+</header>
+
+<div id="chatbox"></div>
+
+<div id="typing"></div>
+
+<div id="suggestions">
+    <div class="suggestion" onclick="quickAsk(this)">Hostel fee</div>
+    <div class="suggestion" onclick="quickAsk(this)">Exam dates</div>
+    <div class="suggestion" onclick="quickAsk(this)">Placement info</div>
+    <div class="suggestion" onclick="quickAsk(this)">Library timing</div>
+</div>
+
+<div id="inputArea">
+    <input id="message" placeholder="Ask anything about campus..." />
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+const API_URL = "https://campus-chatbot-qsby.onrender.com/chat";
+
+const chatbox = document.getElementById("chatbox");
+const typing = document.getElementById("typing");
+
+// Load memory
+let chatHistory = JSON.parse(localStorage.getItem("chat")) || [];
+
+function addMessage(text, type) {
+    const msg = document.createElement("div");
+    msg.classList.add("message", type);
+    msg.innerText = text;
+    chatbox.appendChild(msg);
+    chatbox.scrollTop = chatbox.scrollHeight;
+}
+
+function showTyping() {
+    typing.innerHTML = "Bot is typing<span id='dots'>...</span>";
+    let dots = document.getElementById("dots");
+    let count = 0;
+    window.typingInterval = setInterval(() => {
+        count = (count + 1) % 4;
+        dots.innerText = ".".repeat(count);
+    }, 400);
+}
+
+function stopTyping() {
+    clearInterval(window.typingInterval);
+    typing.innerText = "";
+}
+
+async function sendMessage(customText=null) {
+    const input = document.getElementById("message");
+    
+
+    const userText = customText || input.value.trim();
+    if (!userText) return;
+
+    addMessage(userText, "user");
+    input.value = "";
+
+    chatHistory.push({ role: "user", content: userText });
+
+    showTyping();
+
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ messages: chatHistory })
+        });
+
+        const data = await res.json();
+        addMessage("DEBUG: " + JSON.stringify(data), "bot");
+        stopTyping();
+        addMessage(data.reply, "bot");
+
+        chatHistory.push({ role: "assistant", content: data.reply });
+        localStorage.setItem("chat", JSON.stringify(chatHistory));
+
+    } catch {
+        stopTyping();
+        addMessage("Server error 😢", "bot");
+    }
+}
+
+function quickAsk(el) {
+    sendMessage(el.innerText);
+}
+
+function toggleTheme() {
+    document.body.classList.toggle("light");
+}
+
+// Enter key
+document.getElementById("message").addEventListener("keypress", e => {
+    if (e.key === "Enter") sendMessage();
+});
+
+// Welcome message
+window.onload = () => {
+    if (chatHistory.length === 0) {
+        addMessage("Hi! I'm your CampusBot 🎓 Ask me anything!", "bot");
+    }
+};
+</script>
+
+</body>
+</html>
