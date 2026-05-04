@@ -10,9 +10,14 @@ load_dotenv()
 app = FastAPI()
 
 # CORS (important for frontend)
+ 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://campus-chatbot-pd7gg3b3x-sahil-kumar-2428s-projects.vercel.app",
+        "https://campus-chatbot.vercel.app",
+        "*"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
