@@ -1,14 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from groq import Groq
 import os
 from dotenv import load_dotenv
+from claude_client import get_claude_response
 
 load_dotenv()
 
 app = FastAPI()
 
+# CORS (important for frontend)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,19 +18,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
-
+# Request format
 class ChatRequest(BaseModel):
     messages: list
 
+# Health check route
 @app.get("/")
 def root():
     return {"status": "Campus Chatbot API is running"}
 
+# ✅ FINAL CHAT ROUTE (uses your system prompt + FAQ)
 @app.post("/chat")
 async def chat(request: ChatRequest):
-    response = client.chat.completions.create(
-        model="llama3-8b-8192",
-        messages=request.messages,
-    )
-    return {"reply": response.choices[0].message.content}
+    reply = await get_claude_response(request.messages)
+    return {"reply": reply}
